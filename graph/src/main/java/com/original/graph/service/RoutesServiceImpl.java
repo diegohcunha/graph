@@ -57,7 +57,7 @@ public class RoutesServiceImpl implements RoutesService{
 			while(verifyTarget(town2, path.get(path.size() - 1).getTarget(), path, vertices)) {
 				System.out.println("building routes");
 			}
-			if(maxStops > 0 && path.size() <= maxStops) {
+			if(maxStops == null || path.size() <= maxStops) {
 				routes.add(createRouteByPath(path));
 			}
 			path = new ArrayList<>();
