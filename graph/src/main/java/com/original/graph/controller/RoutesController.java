@@ -29,4 +29,9 @@ public class RoutesController {
 		return new RoutesResponse(routes);
 	}
 	
+	@RequestMapping("/{graphId}/from/{town1}/to/{town2}")
+	public RoutesResponse calculateRoutesSavedGraph(@PathVariable("graphId") Integer graphId, @PathVariable("town1") String town1, @PathVariable("town2") String town2, @PathParam(value="maxStops") Integer maxStops) {
+		List<Route> routes = routesService.calculateRoutesSavedGraph(graphId, town1, town2, maxStops);
+		return new RoutesResponse(routes);
+	}
 }

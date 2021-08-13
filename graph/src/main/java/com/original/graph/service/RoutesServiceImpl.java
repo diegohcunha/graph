@@ -6,9 +6,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.original.graph.exception.ResourceNotFoundException;
 import com.original.graph.model.Route;
 import com.original.graph.model.Vertex;
 import com.original.graph.model.jpa.Edge;
+import com.original.graph.service.interfaces.EdgeService;
 import com.original.graph.service.interfaces.RoutesService;
 import com.original.graph.service.interfaces.VertexService;
 
@@ -16,18 +18,38 @@ import com.original.graph.service.interfaces.VertexService;
 public class RoutesServiceImpl implements RoutesService{
 	
 	@Autowired
+	EdgeService edgeService;
+	
+	@Autowired
 	private VertexService vertexService;
 
 	@Override
 	public List<Route> calculateRoutes(String town1, String town2, List<Edge> edges, Integer maxStops) {
-		List<Route> routes = new ArrayList<>();
 		List<Vertex> vertices = vertexService.createVertex(edges);
 		Vertex vertexInit = null;
+		vertexInit = getVertex(town1, vertices);
+		return createRoutes(edges, vertexInit, maxStops, vertices, town2);
+	}
+	
+	@Override
+	public List<Route> calculateRoutesSavedGraph(Integer graphId, String town1, String town2, Integer maxStops) {
+		Vertex vertexInit = null;
+		List<Edge> edges = edgeService.loadByGraph(graphId);
+		
+		if(edges == null || edges.isEmpty()){
+			throw new ResourceNotFoundException("Graph not found");
+		}
+		
+		List<Vertex> vertices = vertexService.createVertex(edges);
 		
 		vertexInit = getVertex(town1, vertices);
 		
+		return createRoutes(edges, vertexInit, maxStops, vertices, town2);
+	}
+
+	private List<Route> createRoutes(List<Edge> edges, Vertex vertexInit, Integer maxStops, List<Vertex> vertices, String town2) {
+		List<Route> routes = new ArrayList<>();
 		List<Edge> path = new ArrayList<>();
-		
 		Edge out;
 		for(int i = 0; i < vertexInit.getOut().size(); i++) {
 			out = vertexInit.getOut().get(i);
@@ -77,5 +99,5 @@ public class RoutesServiceImpl implements RoutesService{
 		}
 		return null;
 	}
-	
+
 }

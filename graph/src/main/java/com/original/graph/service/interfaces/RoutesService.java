@@ -8,5 +8,6 @@ import com.original.graph.model.jpa.Edge;
 public interface RoutesService {
 
 	List<Route> calculateRoutes(String town1, String town2, List<Edge> edges, Integer maxStops);
+	List<Route> calculateRoutesSavedGraph(Integer idGraph, String town1, String town2, Integer maxStops);
 
 }
