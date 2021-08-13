@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import com.original.graph.model.Vertex;
+
 @Entity
 public class Graph implements Serializable{
 	private static final long serialVersionUID = -6604943182160623366L;
@@ -17,6 +19,9 @@ public class Graph implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@Transient
+	private List<Vertex> vertices;
+	
 	@Transient
 	private List<Edge> data;
 	
