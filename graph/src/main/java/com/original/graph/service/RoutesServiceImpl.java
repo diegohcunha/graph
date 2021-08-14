@@ -24,24 +24,20 @@ public class RoutesServiceImpl implements RoutesService{
 	public List<Route> calculateRoutes(String town1, String town2, List<Edge> edges, Integer maxStops) {
 		List<Vertex> vertices = VertexUtil.createVertex(edges);
 		Vertex vertexInit = null;
-		vertexInit = getVertex(town1, vertices);
+		vertexInit = VertexUtil.getVertex(town1, vertices);
 		return createRoutes(edges, vertexInit, maxStops, vertices, town2);
 	}
 	
 	@Override
 	public List<Route> calculateRoutesSavedGraph(Integer graphId, String town1, String town2, Integer maxStops) {
-		Vertex vertexInit = null;
 		List<Edge> edges = edgeService.loadByGraph(graphId);
 		
 		if(edges == null || edges.isEmpty()){
 			throw new ResourceNotFoundException("Graph not found");
 		}
 		
-		List<Vertex> vertices = VertexUtil.createVertex(edges);
+		return calculateRoutes(town1, town2, edges, maxStops);
 		
-		vertexInit = getVertex(town1, vertices);
-		
-		return createRoutes(edges, vertexInit, maxStops, vertices, town2);
 	}
 
 	private List<Route> createRoutes(List<Edge> edges, Vertex vertexInit, Integer maxStops, List<Vertex> vertices, String town2) {
@@ -64,7 +60,7 @@ public class RoutesServiceImpl implements RoutesService{
 	}
 
 	private boolean verifyTarget(String finish, String target, List<Edge> path, List<Vertex> vertices) {
-		Vertex vertex = getVertex(target, vertices);
+		Vertex vertex = VertexUtil.getVertex(target, vertices);
 		for(Edge edge : vertex.getOut()){
 			if(edge.getTarget().equals(finish)){
 				path.add(edge);
@@ -86,15 +82,6 @@ public class RoutesServiceImpl implements RoutesService{
 			stops++;
 		}
 		return new Route(strRoute, stops);
-	}
-	
-	private Vertex getVertex(String source, List<Vertex> vertices) {
-		for(Vertex vertex : vertices){
-			if(vertex.getSource().equals(source)) {
-				return vertex;
-			}
-		}
-		return null;
 	}
 
 }
