@@ -12,7 +12,7 @@ import com.original.graph.model.Vertex;
 import com.original.graph.model.jpa.Edge;
 import com.original.graph.service.interfaces.EdgeService;
 import com.original.graph.service.interfaces.RoutesService;
-import com.original.graph.service.interfaces.VertexService;
+import com.original.graph.util.VertexUtil;
 
 @Service
 public class RoutesServiceImpl implements RoutesService{
@@ -20,12 +20,9 @@ public class RoutesServiceImpl implements RoutesService{
 	@Autowired
 	EdgeService edgeService;
 	
-	@Autowired
-	private VertexService vertexService;
-
 	@Override
 	public List<Route> calculateRoutes(String town1, String town2, List<Edge> edges, Integer maxStops) {
-		List<Vertex> vertices = vertexService.createVertex(edges);
+		List<Vertex> vertices = VertexUtil.createVertex(edges);
 		Vertex vertexInit = null;
 		vertexInit = getVertex(town1, vertices);
 		return createRoutes(edges, vertexInit, maxStops, vertices, town2);
@@ -40,7 +37,7 @@ public class RoutesServiceImpl implements RoutesService{
 			throw new ResourceNotFoundException("Graph not found");
 		}
 		
-		List<Vertex> vertices = vertexService.createVertex(edges);
+		List<Vertex> vertices = VertexUtil.createVertex(edges);
 		
 		vertexInit = getVertex(town1, vertices);
 		
