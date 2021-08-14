@@ -32,4 +32,14 @@ public class DistanceController {
 		Integer distance = distanceService.calculateDistanceSavedGraph(requestPath.getPath(), graphId);
 		return new DistanceResponse(distance);
 	}
+	
+	@PostMapping("/from/{town1}/to/{town2}")
+	public DistanceResponse calculateMinimumDistance(@PathVariable("town1") String town1, @PathVariable("town2") String town2, @RequestBody DistanceRequest requestPath) {
+		return distanceService.calculateMinimumDistance(town1, town2, requestPath.getData());
+	}
+	
+	@PostMapping("/{graphId}/from/{town1}/to/{town2}")
+	public DistanceResponse calculateMinimumDistanceSavedGraph(@PathVariable("graphId") Integer graphId, @PathVariable("town1") String town1, @PathVariable("town2") String town2, @RequestBody DistanceRequest requestPath) {
+		return distanceService.calculateMinimumDistanceSavedGraph(graphId, town1, town2, requestPath.getData());
+	}
 }
