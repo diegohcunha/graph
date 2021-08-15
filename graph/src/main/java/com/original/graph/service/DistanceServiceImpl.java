@@ -69,6 +69,11 @@ public class DistanceServiceImpl implements DistanceService {
 		}
 		
 		List<Route> routes = routesService.calculateRoutes(town1, town2, data, null);
+		
+		if(routes == null || routes.isEmpty()) {
+			return new DistanceResponse(-1);
+		}
+		
 		Integer minDistance = null;
 		Integer distanceCalc;
 		List<String> pathCalc;

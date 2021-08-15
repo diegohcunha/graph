@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.original.graph.model.Route;
 
-public class RoutesResponse {
+public class RoutesResponse extends BaseResponse{
 	
 	private List<Route> routes;
 

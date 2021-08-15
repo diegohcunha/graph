@@ -15,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import com.original.graph.controller.RoutesController;
 import com.original.graph.model.Route;
 import com.original.graph.model.jpa.Edge;
-import com.original.graph.service.RoutesServiceImpl;
 import com.original.graph.service.interfaces.DistanceService;
 import com.original.graph.service.interfaces.EdgeService;
 import com.original.graph.service.interfaces.GraphService;

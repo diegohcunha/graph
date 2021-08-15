@@ -27,4 +27,12 @@ public class ControllerExceptionHandler {
 
 		return new ResponseEntity<ErrorMessage>(message, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	@ExceptionHandler(InvalidRouteFoundException.class)
+	public ResponseEntity<ErrorMessage> invalidRouteFoundException(InvalidRouteFoundException ex, WebRequest request) {
+		ErrorMessage message = new ErrorMessage(HttpStatus.OK.value(), new Date(), ex.getMessage(),
+				request.getDescription(false));
+
+		return new ResponseEntity<ErrorMessage>(message, HttpStatus.OK);
+	}
 }

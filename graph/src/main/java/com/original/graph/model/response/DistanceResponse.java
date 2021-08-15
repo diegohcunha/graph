@@ -2,7 +2,7 @@ package com.original.graph.model.response;
 
 import java.util.List;
 
-public class DistanceResponse {
+public class DistanceResponse extends BaseResponse{
 
 	private Integer distance;
 	private List<String> path;

@@ -20,9 +20,14 @@ public class RoutesServiceImpl implements RoutesService{
 	@Autowired
 	EdgeService edgeService;
 	
+	List<Vertex> percorredVertex;
+	List<Vertex> totalVertexGraph;
+	boolean invalidRoute = false;
+	
 	@Override
 	public List<Route> calculateRoutes(String town1, String town2, List<Edge> edges, Integer maxStops) {
 		List<Vertex> vertices = VertexUtil.createVertex(edges);
+		totalVertexGraph = VertexUtil.createVertex(edges);
 		Vertex vertexInit = null;
 		vertexInit = VertexUtil.getVertex(town1, vertices);
 		return createRoutes(edges, vertexInit, maxStops, vertices, town2);
@@ -41,15 +46,26 @@ public class RoutesServiceImpl implements RoutesService{
 	}
 
 	private List<Route> createRoutes(List<Edge> edges, Vertex vertexInit, Integer maxStops, List<Vertex> vertices, String town2) {
+		percorredVertex = new ArrayList<>();
 		List<Route> routes = new ArrayList<>();
 		List<Edge> path = new ArrayList<>();
 		Edge out;
+		
+		removeEdgesInFinishVertex(town2, vertices);
+		
+		percorredVertex.add(vertexInit);
+		invalidRoute = false;
 		for(int i = 0; i < vertexInit.getOut().size(); i++) {
 			out = vertexInit.getOut().get(i);
 			path.add(out);
 			while(verifyTarget(town2, path.get(path.size() - 1).getTarget(), path, vertices)) {
 				System.out.println("building routes");
 			}
+			
+			if(invalidRoute){
+				return new ArrayList<>();
+			}
+			
 			if(maxStops == null || path.size() <= maxStops) {
 				routes.add(createRouteByPath(path));
 			}
@@ -60,17 +76,39 @@ public class RoutesServiceImpl implements RoutesService{
 	}
 
 	private boolean verifyTarget(String finish, String target, List<Edge> path, List<Vertex> vertices) {
+		
 		Vertex vertex = VertexUtil.getVertex(target, vertices);
+		
 		for(Edge edge : vertex.getOut()){
 			if(edge.getTarget().equals(finish)){
 				path.add(edge);
 				return false;
 			}else {
-				path.add(edge);
-				verifyTarget(finish, edge.getTarget(), path, vertices);
+				if(verifyIfExistsNonPercorredEdge()){
+					percorredVertex.add(vertex);
+					path.add(edge);
+					verifyTarget(finish, edge.getTarget(), path, vertices);
+				}else {
+					invalidRoute = true;
+					break;
+				}
 			}
 		}
 		return false;
+	}
+
+	private boolean verifyIfExistsNonPercorredEdge() {
+		for(Vertex vertex : totalVertexGraph) {
+			if(! percorredVertex.contains(vertex)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void removeEdgesInFinishVertex(String finishRoute, List<Vertex> vertices) {
+		Vertex vertex = VertexUtil.getVertex(finishRoute, vertices);
+		totalVertexGraph.remove(vertex);
 	}
 
 	private Route createRouteByPath(List<Edge> path) {
